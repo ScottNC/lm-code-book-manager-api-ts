@@ -112,7 +112,7 @@ describe("POST /api/v1/books endpoint", () => {
 		// Act
 		const res = await request(app)
 			.post("/api/v1/books")
-			.send({ bookId: 3, title: "Fantastic Mr. Fox", author: "Roald Dahl" });
+			.send({ bookId: 3, title: "Fantastic Mr. Fox", author: "Roald Dahl", description: "Fantastic Mr Fox is about a fox who is fantastic" });
 
 		// Assert
 		expect(res.statusCode).toEqual(201);
@@ -121,26 +121,35 @@ describe("POST /api/v1/books endpoint", () => {
 	test("status code 400 when saving ill formatted JSON", async () => {
 		// Arrange - we can enforce throwing an exception by mocking the implementation
 		jest.spyOn(bookService, "saveBook").mockImplementation(() => {
-			throw new Error("Error saving book");
+			throw new Error("notNull Violation: Book.bookId cannot be null");
 		});
 
 		// Act
 		const res = await request(app)
 			.post("/api/v1/books")
-			.send({ title: "Fantastic Mr. Fox", author: "Roald Dahl" }); // No bookId
+			.send({ title: "Fantastic Mr. Fox", author: "Roald Dahl", description: "Fantastic Mr Fox is about a fox who is fantastic" }); // No bookId
 
 		// Assert
 		expect(res.statusCode).toEqual(400);
+
+		expect(res.body.message).toBe("notNull Violation: Book.bookId cannot be null")
 	});
 
-	test("status code successfully 201 for saving a valid book", async () => {
+	test("status code successfully 400 for saving book with already existing id", async () => {
+
+		jest.spyOn(bookService, "saveBook").mockImplementation(() => {
+			throw new Error("Validation error");
+		});
+
 		// Act
 		const res = await request(app)
 			.post("/api/v1/books")
-			.send({ bookId: 2, title: "Fantastic Mr. Fox", author: "Roald Dahl" });
+			.send({ bookId: 2, title: "Fantastic Mr. Fox", author: "Roald Dahl", description: "Fantastic Mr Fox is about a fox who is fantastic" });
 
 		// Assert
 		expect(res.statusCode).toEqual(400);
+
+		expect(res.body.message).toBe("IDs cannot be duplicated")
 	});
 
 });

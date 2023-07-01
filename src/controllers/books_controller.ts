@@ -23,7 +23,7 @@ export const saveBook = async (req: Request, res: Response) => {
 		const book = await bookService.saveBook(bookToBeSaved);
 		res.status(201).json(book);
 	} catch (error) {
-		res.status(400).json({ message: (error as Error).message });
+		res.status(400).json({ message: (error as Error).message === "Validation error" ? 'IDs cannot be duplicated' : (error as Error).message });
 	}
 };
 
