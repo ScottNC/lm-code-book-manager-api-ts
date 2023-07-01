@@ -1,8 +1,11 @@
-import { app } from "./app";
-import { populateDummyData } from "./database/database_seed";
-
+import * as dotenv from "dotenv";
 const environment = process.env.NODE_ENV || "dev";
-const PORT = 3000;
+dotenv.config({ path: `.env.${environment}` });
+
+import { app } from "./app";
+const PORT = process.env.PORT;
+
+import { populateDummyData } from "./database/database_seed";
 
 console.log(`🌍 Running in ${environment} environment`);
 
