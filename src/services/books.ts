@@ -22,3 +22,9 @@ export const updateBook = async (bookId: number, book: Book) => {
 		},
 	});
 };
+
+export const deleteBook = async (bookId: number) => {
+	return await Book.destroy({
+		where: { bookId },
+	});
+};
