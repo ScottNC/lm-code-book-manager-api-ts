@@ -41,5 +41,8 @@ export const deleteBook = async (req: Request, res: Response) => {
 
 	const booksDeleted: number = await bookService.deleteBook(Number(bookId));
 
-	res.status(booksDeleted ? 200 : 404).json({success: !!booksDeleted, booksDeleted});
+	if (booksDeleted)
+		res.status(200).json({success: true, message: `Book ${bookId} deleted successfully`});
+	else
+		res.status(404).json({success: false, message: `Book ${bookId} does not exist`});
 };

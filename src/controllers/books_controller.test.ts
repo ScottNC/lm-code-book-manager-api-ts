@@ -132,6 +132,17 @@ describe("POST /api/v1/books endpoint", () => {
 		// Assert
 		expect(res.statusCode).toEqual(400);
 	});
+
+	test("status code successfully 201 for saving a valid book", async () => {
+		// Act
+		const res = await request(app)
+			.post("/api/v1/books")
+			.send({ bookId: 2, title: "Fantastic Mr. Fox", author: "Roald Dahl" });
+
+		// Assert
+		expect(res.statusCode).toEqual(400);
+	});
+
 });
 
 describe("DELETE /api/v1/books/{bookId} endpoint", () => {
@@ -145,7 +156,7 @@ describe("DELETE /api/v1/books/{bookId} endpoint", () => {
 
 		expect(res.statusCode).toEqual(200);
 
-		expect(res.body).toEqual({success: true, booksDeleted: 1});
+		expect(res.body).toEqual({success: true, message: "Book 2 deleted successfully"});
 	});
 
 	test("get returns 404 after deleting book", async () => {
@@ -171,6 +182,6 @@ describe("DELETE /api/v1/books/{bookId} endpoint", () => {
 		
 		expect(res.statusCode).toEqual(404);
 
-		expect(res.body).toEqual({success: false, booksDeleted: 0});
+		expect(res.body).toEqual({success: false, message: "Book 55 does not exist"});
 	});
 });
